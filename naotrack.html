@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#142b49">
+<title>NaoTrack — Student Transport Tracking & Safety System</title>
+<style>
+:root {
+  --navy:#142b49;
+  --navy2:#1c3b61;
+  --blue:#3478c7;
+  --blue-light:#eaf3ff;
+  --bg:#f4f7fb;
+  --white:#fff;
+  --text:#24354b;
+  --muted:#77869a;
+  --border:#e3e9f1;
+  --green:#18865a;
+  --green-bg:#e6f6ee;
+  --red:#c34444;
+  --red-bg:#fff0f0;
+  --amber:#a76a0a;
+  --amber-bg:#fff4df;
+  --shadow:0 3px 15px rgba(25,45,75,.045);
+  --radius:12px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,"Segoe UI",Arial,sans-serif;font-size:14px;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #82b9ff;outline-offset:2px}
+button:disabled{opacity:.55;cursor:not-allowed}
+.hidden{display:none!important}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+h1,h2,h3,p{margin-top:0}
+h1{font-size:25px;letter-spacing:-.6px;margin-bottom:6px}
+h2{font-size:17px}
+h3{font-size:14px}
+button,.btn{transition:background .18s,border-color .18s,color .18s,transform .18s,box-shadow .18s}
+.btn{border:1px solid var(--border);border-radius:8px;background:#fff;color:var(--text);padding:9px 13px;display:inline-flex;align-items:center;justify-content:center;gap:7px;font-weight:600;text-decoration:none;white-space:nowrap}
+.btn:hover{background:#f2f6fc;border-color:#c8d6e8}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn-primary:hover{background:#2867b0;border-color:#2867b0;color:#fff}
+.btn-dark{background:var(--navy);color:white;border-color:var(--navy)}
+.btn-danger{color:var(--red);border-color:#f0d6d6}
+.btn-danger:hover{background:var(--red-bg)}
+.btn-sm{padding:6px 9px;font-size:12px}
+.icon{width:19px;height:19px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.icon svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.brand-mark{width:39px;height:39px;border-radius:10px;background:#e9f2ff;color:var(--navy);display:grid;place-items:center;flex-shrink:0}
+.brand-mark svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:#f4f7fb;animation:fade .5s ease}
+.login-layout{display:grid;grid-template-columns:1fr 1fr;max-width:970px;width:100%;min-height:570px;background:#fff;border:1px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:0 20px 70px rgba(18,43,73,.09)}
+.login-visual{background:var(--navy);color:#fff;padding:48px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.login-visual:before{content:"";position:absolute;width:300px;height:300px;border:1px solid #ffffff16;border-radius:50%;right:-100px;top:90px}
+.login-visual:after{content:"";position:absolute;width:230px;height:230px;border:1px solid #ffffff12;border-radius:50%;right:-65px;top:125px}
+.login-visual>*{position:relative;z-index:1}
+.login-brand{display:flex;align-items:center;gap:12px;font-size:21px;font-weight:750;letter-spacing:-.6px}
+.login-brand .brand-mark{background:#fff;color:var(--navy)}
+.login-tagline{font-size:34px;line-height:1.2;letter-spacing:-1px;font-weight:750;max-width:360px;margin-bottom:15px}
+.login-description{line-height:1.8;color:#c6d4e6;max-width:340px;font-size:14px}
+.login-features{display:grid;gap:14px;margin-top:32px}
+.login-feature{display:flex;gap:12px;align-items:center;color:#e1eaf5}
+.login-feature .icon{color:#9fc7ff}
+.login-footer{color:#9fb2ca;font-size:12px}
+.login-form-area{padding:48px;display:flex;flex-direction:column;justify-content:center}
+.login-form-area h1{font-size:27px;margin-bottom:10px}
+.login-form-area .intro{color:var(--muted);line-height:1.7;margin-bottom:28px}
+.field{display:flex;flex-direction:column;gap:7px;margin-bottom:17px;min-width:0}
+.field label{font-size:12px;font-weight:700;color:#3d5068}
+.field input,.field select,.field textarea,.search-input{width:100%;border:1px solid #d9e2ee;border-radius:8px;background:#fff;color:var(--text);padding:11px 12px;outline:none;transition:border-color .2s,box-shadow .2s;min-width:0}
+.field input:focus,.field select:focus,.field textarea:focus,.search-input:focus{border-color:#5b97e2;box-shadow:0 0 0 3px #3478c71a}
+.field textarea{resize:vertical;min-height:78px}
+.password-wrap{position:relative}
+.password-wrap input{padding-right:75px}
+.password-toggle{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--blue);font-size:12px;font-weight:700;padding:7px}
+.form-error{font-size:12px;color:var(--red);min-height:17px;margin-top:-5px;margin-bottom:10px}
+.login-submit{width:100%;padding:13px}
+.spinner{width:15px;height:15px;border:2px solid #ffffff66;border-top-color:white;border-radius:50%;animation:spin .7s linear infinite}
+.login-note{margin-top:19px;font-size:12px;color:var(--muted);line-height:1.6}
+#app{min-height:100vh}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:245px;background:var(--navy);color:#d5dfeb;z-index:20;display:flex;flex-direction:column;transition:transform .25s ease;animation:slideRight .35s ease}
+.sidebar-header{padding:22px 20px 24px;border-bottom:1px solid #ffffff14;display:flex;gap:11px;align-items:center}
+.sidebar-header .brand-mark{width:37px;height:37px;background:#fff;color:var(--navy)}
+.brand-name{font-weight:750;font-size:18px;color:#fff;letter-spacing:-.5px}
+.brand-sub{font-size:10px;color:#a9bdd5;margin-top:4px;letter-spacing:.7px;text-transform:uppercase}
+.nav-label{font-size:10px;font-weight:800;letter-spacing:1.3px;color:#849bb6;padding:24px 22px 9px;text-transform:uppercase}
+.nav-list{padding:0 11px;display:grid;gap:4px}
+.nav-item{border:0;background:transparent;color:#c5d2e2;border-radius:8px;text-align:left;padding:11px 12px;display:flex;align-items:center;gap:12px;width:100%;font-size:13px;font-weight:550}
+.nav-item:hover{background:#ffffff0c;color:#fff}
+.nav-item.active{background:#29496e;color:#fff;box-shadow:inset 3px 0 #78b4ff}
+.nav-item .nav-count{margin-left:auto;background:#365a82;padding:2px 7px;border-radius:6px;font-size:10px}
+.sidebar-bottom{margin-top:auto;padding:14px 12px;border-top:1px solid #ffffff14}
+.profile-row{display:flex;align-items:center;gap:10px;padding:11px 7px}
+.avatar{width:35px;height:35px;border-radius:9px;background:#dceaff;color:var(--navy);display:grid;place-items:center;font-weight:800;flex-shrink:0}
+.profile-name{font-weight:650;color:#fff;font-size:12px;max-width:145px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.profile-role{font-size:11px;color:#9fb3ca;margin-top:4px}
+.main-shell{margin-left:245px;min-height:100vh;transition:margin-left .25s}
+.topbar{height:70px;position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 30px;gap:18px}
+.topbar-left,.topbar-right{display:flex;align-items:center;gap:12px;min-width:0}
+.breadcrumb{font-size:12px;color:var(--muted)}
+.breadcrumb strong{color:var(--text);font-weight:700}
+.topbar-user{font-size:12px;color:#54657a}
+.menu-toggle{display:none}
+.top-icon-btn{position:relative;border:1px solid var(--border);background:#fff;border-radius:9px;width:37px;height:37px;display:grid;place-items:center;color:#52657e}
+.top-icon-btn:hover{background:#f2f6fc}
+.notice-dot{position:absolute;width:7px;height:7px;border-radius:50%;background:#e45d5d;right:7px;top:7px;border:1px solid white}
+.content{padding:29px 30px 40px;max-width:1600px;margin:0 auto;animation:fade .28s ease}
+.page-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:25px}
+.page-heading p{color:var(--muted);margin-bottom:0;line-height:1.6}
+.heading-actions{display:flex;gap:9px;flex-wrap:wrap}
+.panel{background:#fff;border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);min-width:0}
+.panel-head{padding:19px 20px 15px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.panel-head h2{margin:0;font-size:14px;font-weight:750}
+.panel-body{padding:0 20px 20px}
+.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:20px}
+.stat-card{padding:20px;background:#fff;border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);transition:transform .2s,border-color .2s}
+.stat-card:hover{transform:translateY(-2px);border-color:#cbd9e9}
+.stat-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.stat-label{font-size:12px;color:var(--muted);font-weight:600}
+.stat-icon{width:37px;height:37px;border-radius:9px;background:var(--blue-light);color:var(--blue);display:grid;place-items:center}
+.stat-number{font-size:29px;font-weight:750;letter-spacing:-1px;margin:15px 0 5px;color:var(--navy)}
+.stat-foot{font-size:11px;color:var(--muted)}
+.stat-foot strong{color:var(--green)}
+.dashboard-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(270px,1fr);gap:19px;margin-bottom:20px}
+.vehicle-mini-list{display:grid;gap:0}
+.vehicle-mini{padding:14px 0;display:flex;align-items:center;gap:12px;border-top:1px solid #edf0f5}
+.vehicle-mini:first-child{border-top:0}
+.vehicle-symbol{width:40px;height:40px;background:#edf4fd;border-radius:9px;display:grid;place-items:center;color:#315d8f;flex-shrink:0}
+.vehicle-main{min-width:0;flex:1}
+.vehicle-main strong{font-size:13px}
+.vehicle-main p{margin:4px 0 0;font-size:11px;color:var(--muted)}
+.vehicle-side{text-align:right;display:grid;gap:5px;justify-items:end}
+.status{display:inline-flex;align-items:center;gap:6px;padding:5px 8px;border-radius:6px;font-size:10px;font-weight:750;white-space:nowrap;background:#f0f3f7;color:#63738a}
+.status:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.status.on-route,.status.present{background:var(--green-bg);color:var(--green)}
+.status.at-school{background:var(--blue-light);color:#326cae}
+.status.scheduled,.status.unmarked{background:#eef1f5;color:#68778a}
+.status.delayed,.status.absent{background:var(--amber-bg);color:var(--amber)}
+.status.offline{background:var(--red-bg);color:var(--red)}
+.activity-list{display:grid}
+.activity-item{display:flex;gap:11px;padding:13px 0;border-bottom:1px solid #edf0f5}
+.activity-item:last-child{border-bottom:0}
+.activity-dot{width:9px;height:9px;border-radius:50%;background:#4b8bd1;margin-top:4px;flex-shrink:0}
+.activity-item p{margin:0;font-size:12px;line-height:1.6}
+.activity-item small{display:block;color:var(--muted);font-size:10px;margin-top:4px}
+.section-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.search-wrap{position:relative;min-width:190px;max-width:340px;flex:1}
+.search-wrap .icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#8391a4}
+.search-input{padding-left:36px}
+.filter-select{padding:10px 12px;border:1px solid var(--border);background:#fff;border-radius:8px;color:var(--text);max-width:100%}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;text-align:left}
+th{padding:13px 16px;background:#f8fafd;color:#718097;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;border-bottom:1px solid var(--border)}
+td{padding:14px 16px;border-bottom:1px solid #edf0f5;font-size:12px;vertical-align:middle}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover{background:#fbfcfe}
+.td-primary{font-weight:700;color:#273d58}
+.td-secondary{display:block;color:var(--muted);font-size:10px;margin-top:4px}
+.table-actions{display:flex;gap:6px}
+.action-btn{border:1px solid var(--border);background:white;color:#536880;width:29px;height:29px;border-radius:6px;display:grid;place-items:center}
+.action-btn:hover{color:var(--blue);background:var(--blue-light);border-color:#c6dcfa}
+.action-btn.danger:hover{color:var(--red);background:var(--red-bg)}
+.action-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.empty-state{text-align:center;padding:42px 18px;color:var(--muted)}
+.empty-state strong{display:block;color:var(--text);margin:10px 0 6px}
+.empty-icon{width:44px;height:44px;margin:auto;border-radius:12px;background:#edf4fd;color:var(--blue);display:grid;place-items:center}
+.table-footer{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 18px;border-top:1px solid var(--border);color:var(--muted);font-size:11px}
+.attendance-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}
+.att-card{background:white;border:1px solid var(--border);border-radius:10px;padding:17px}
+.att-card span{font-size:11px;color:var(--muted)}
+.att-card strong{display:block;font-size:25px;margin-top:8px;color:var(--navy)}
+.att-card.green strong{color:var(--green)}
+.att-card.amber strong{color:var(--amber)}
+.map-layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(260px,1fr);gap:18px}
+.map-canvas{height:400px;position:relative;overflow:hidden;background:#edf2f5;border-radius:10px;border:1px solid #dce4e9}
+.map-grid{position:absolute;inset:0;background-color:#edf2f5;background-image:linear-gradient(26deg,transparent 45%,#fff 45%,#fff 47%,transparent 47%),linear-gradient(115deg,transparent 40%,#fff 40%,#fff 43%,transparent 43%),linear-gradient(0deg,transparent 48%,#d8e5d7 48%,#d8e5d7 57%,transparent 57%),linear-gradient(90deg,transparent 73%,#d8e5d7 73%,#d8e5d7 80%,transparent 80%);background-size:250px 190px,290px 220px,360px 310px,340px 300px}
+.map-road{position:absolute;height:10px;background:#fff;border:1px solid #dfe5e9;border-radius:8px;transform-origin:left center}
+.map-road.r1{width:130%;left:-10%;top:27%;transform:rotate(21deg)}
+.map-road.r2{width:130%;left:-10%;top:73%;transform:rotate(-28deg)}
+.map-road.r3{width:100%;left:5%;top:10%;transform:rotate(75deg)}
+.map-road.r4{width:95%;left:48%;top:-5%;transform:rotate(67deg)}
+.map-park{position:absolute;background:#d8e8d5;border:1px solid #ccdfc8;border-radius:25px}
+.map-park.p1{width:22%;height:24%;left:5%;top:48%}
+.map-park.p2{width:18%;height:21%;right:8%;top:13%}
+.map-place{position:absolute;font-size:10px;color:#768b7b;font-weight:650;white-space:nowrap}
+.map-place.school{right:12%;bottom:16%;color:#355d91}
+.map-place.market{left:16%;top:34%}
+.map-place.park{left:8%;top:59%}
+.map-marker{position:absolute;width:35px;height:35px;border-radius:50% 50% 50% 5px;transform:rotate(-45deg);display:grid;place-items:center;background:var(--blue);border:3px solid white;box-shadow:0 2px 7px #0002;cursor:pointer}
+.map-marker span{transform:rotate(45deg);color:white;font-size:11px;font-weight:800}
+.map-marker:hover{z-index:3;scale:1.12}
+.map-marker.m1{left:33%;top:35%}
+.map-marker.m2{left:60%;top:58%;background:var(--green)}
+.map-marker.m3{left:76%;top:25%;background:#d29332}
+.map-legend{position:absolute;left:12px;top:12px;background:#fff;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:10px;display:grid;gap:8px;box-shadow:var(--shadow)}
+.legend-row{display:flex;align-items:center;gap:7px}
+.legend-dot{width:8px;height:8px;border-radius:50%}
+.demo-label{position:absolute;right:12px;bottom:12px;background:#fff;color:#6c7c8e;border:1px solid var(--border);padding:7px 9px;border-radius:7px;font-size:10px}
+.map-vehicle{border-bottom:1px solid var(--border);padding:14px 0;display:flex;gap:11px;align-items:center}
+.map-vehicle:last-child{border-bottom:0}
+.map-vehicle .vehicle-symbol{width:36px;height:36px}
+.map-vehicle-info{flex:1;min-width:0}
+.map-vehicle-info strong{font-size:12px}
+.map-vehicle-info p{font-size:11px;color:var(--muted);margin:4px 0 0}
+.notice-item{display:flex;gap:13px;padding:17px 20px;border-bottom:1px solid var(--border)}
+.notice-item:last-child{border-bottom:0}
+.notice-symbol{width:37px;height:37px;border-radius:9px;background:#edf4fd;color:var(--blue);display:grid;place-items:center;flex-shrink:0}
+.notice-content{flex:1;min-width:0}
+.notice-content strong{font-size:13px}
+.notice-content p{font-size:12px;color:#63738a;line-height:1.6;margin:6px 0}
+.notice-content small{font-size:10px;color:var(--muted)}
+.notice-item.read{opacity:.7}
+.settings-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+.settings-section{padding:20px}
+.settings-section h2{margin-bottom:7px}
+.settings-section>p{font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:22px}
+.setting-row{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:15px 0;border-top:1px solid #edf0f5}
+.setting-row strong{font-size:12px}
+.setting-row p{font-size:11px;color:var(--muted);margin:5px 0 0;line-height:1.5}
+.toggle{position:relative;width:38px;height:21px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;border-radius:30px;background:#c6d0dc;transition:.2s;cursor:pointer}
+.toggle-slider:before{content:"";position:absolute;width:15px;height:15px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.toggle input:checked+.toggle-slider{background:var(--blue)}
+.toggle input:checked+.toggle-slider:before{transform:translateX(17px)}
+.notice-toast{position:fixed;top:84px;right:22px;z-index:100;background:#fff;border:1px solid var(--border);border-left:4px solid var(--green);border-radius:10px;padding:14px 17px;box-shadow:0 12px 35px #172b4618;display:flex;align-items:center;gap:11px;max-width:min(390px,calc(100vw - 30px));animation:toastIn .25s ease}
+.notice-toast.error{border-left-color:var(--red)}
+.notice-toast .toast-text{font-size:12px;line-height:1.5}
+.notice-toast strong{display:block;font-size:13px;margin-bottom:3px}
+.modal-backdrop{position:fixed;inset:0;background:#10243d85;z-index:50;display:flex;align-items:center;justify-content:center;padding:18px;animation:fade .2s ease}
+.modal{width:100%;max-width:560px;max-height:90vh;overflow:auto;background:white;border-radius:14px;box-shadow:0 20px 80px #10243d30;animation:modalIn .22s ease}
+.modal-header{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:20px 22px;border-bottom:1px solid var(--border)}
+.modal-header h2{margin:0}
+.modal-close{width:32px;height:32px;border:1px solid var(--border);border-radius:8px;background:white;color:#64748b;font-size:19px;display:grid;place-items:center}
+.modal-body{padding:22px}
+.modal-footer{display:flex;justify-content:flex-end;gap:9px;padding:15px 22px;border-top:1px solid var(--border)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.form-grid .full{grid-column:1/-1}
+#sidebarOverlay{display:none}
+.app-footnote{text-align:center;color:#99a5b5;font-size:10px;margin-top:25px}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes slideRight{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes toastIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes modalIn{from{opacity:0;transform:translateY(9px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+@media(max-width:1100px){.sidebar{width:220px}.main-shell{margin-left:220px}.topbar{padding:0 22px}.content{padding:24px 22px}.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.dashboard-grid{grid-template-columns:1fr}.login-visual,.login-form-area{padding:36px}}
+@media(max-width:760px){.sidebar{transform:translateX(-100%);width:260px}.sidebar.open{transform:translateX(0)}#sidebarOverlay.visible{display:block;position:fixed;inset:0;background:#10243d70;z-index:19}.main-shell{margin-left:0}.menu-toggle{display:grid}.topbar{height:62px;padding:0 14px}.content{padding:22px 14px 30px}.topbar-user{display:none}.page-heading{flex-direction:column;gap:15px}.page-heading h1{font-size:23px}.heading-actions{width:100%}.dashboard-grid,.map-layout,.settings-layout{grid-template-columns:1fr}.attendance-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.map-canvas{height:330px}.login-layout{grid-template-columns:1fr;max-width:480px}.login-visual{padding:27px;min-height:245px}.login-tagline{font-size:25px;margin-top:27px;margin-bottom:8px}.login-description{font-size:12px}.login-features{display:none}.login-footer{margin-top:20px}.login-form-area{padding:29px}.login-form-area h1{font-size:24px}}
+@media(max-width:420px){.stats-grid{gap:10px}.stat-card{padding:14px}.stat-number{font-size:25px}.stat-icon{width:31px;height:31px}.stat-label{font-size:11px}.content{padding-left:11px;padding-right:11px}.panel-head{padding:15px}.panel-body{padding:0 15px 15px}.form-grid{grid-template-columns:1fr}.form-grid .full{grid-column:auto}.topbar-right{gap:7px}.heading-actions .btn{flex:1}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/><path d="m9 12 2 2 4-4"/></symbol>
+<symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></symbol>
+<symbol id="i-bus" viewBox="0 0 24 24"><path d="M5 18V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v13"/><path d="M5 12h14M5 7h14M7 18v2m10-2v2M5 18h14"/><circle cx="8" cy="15" r="1"/><circle cx="16" cy="15" r="1"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></symbol>
+<symbol id="i-map" viewBox="0 0 24 24"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3Z"/><path d="M9 3v15m6-12v15"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></symbol>
+<symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-2 1.1l-.3 1.9h-2.8l-.3-1.9a8 8 0 0 1-2-1.1l-1.7.7-1.4-2.4L8.7 15a8 8 0 0 1 0-2l-1.4-1.1 1.4-2.4 1.7.7a8 8 0 0 1 2-1.1l.3-1.9h2.8l.3 1.9a8 8 0 0 1 2 1.1l1.7-.7 1.4 2.4-1.4 1.1a8 8 0 0 1 0 2Z" transform="translate(-2 -1)"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/></symbol>
+<symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+<symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="19" r="3"/><path d="M9 19h2a4 4 0 0 0 4-4V9a4 4 0 0 1 4-4h1"/><path d="m17 2 3 3-3 3"/></symbol>
+<symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5m5 5H9"/></symbol>
+<symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 13h8M8 17h8"/></symbol>
+<symbol id="i-bellring" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4M2 2l3 3m17-3-3 3"/></symbol>
+</svg>
+
+<section id="loginScreen">
+  <div class="login-layout">
+    <div class="login-visual">
+      <div class="login-brand">
+        <div class="brand-mark"><svg><use href="#i-shield"/></svg></div>
+        <span>NaoTrack</span>
+      </div>
+      <div>
+        <div class="login-tagline">Safer journeys.<br>Smarter schools.</div>
+        <p class="login-description">A student transport management system designed to help schools organize vehicles, monitor attendance and manage transport operations.</p>
+        <div class="login-features">
+          <div class="login-feature"><span class="icon"><svg><use href="#i-map"/></svg></span><span>Transport tracking dashboard</span></div>
+          <div class="login-feature"><span class="icon"><svg><use href="#i-check"/></svg></span><span>Student attendance management</span></div>
+          <div class="login-feature"><span class="icon"><svg><use href="#i-shield"/></svg></span><span>Safety-focused administration</span></div>
+        </div>
+      </div>
+      <div class="login-footer">NaoTrack · Student Transport Tracking &amp; Safety System</div>
+    </div>
+    <div class="login-form-area">
+      <h1>Welcome back</h1>
+      <p class="intro">Sign in to access your transport management dashboard.</p>
+      <form id="loginForm" autocomplete="on" novalidate>
+        <div class="field">
+          <label for="loginUsername">Username</label>
+          <input id="loginUsername" name="username" placeholder="Enter your username" autocomplete="username" required autofocus>
+        </div>
+        <div class="field">
+          <label for="loginPassword">Password</label>
+          <div class="password-wrap">
+            <input id="loginPassword" name="password" type="password" placeholder="Enter your password" autocomplete="current-password" required>
+            <button class="password-toggle" type="button" id="togglePassword">Show</button>
+          </div>
+        </div>
+        <div id="loginError" class="form-error" role="alert"></div>
+        <button class="btn btn-primary login-submit" id="loginSubmit" type="button" onclick="window.naotrackSignIn(event)">
+          <span id="loginSubmitText">Sign In</span>
+        </button>
+      </form>
+      <p class="login-note">Prototype access: enter any non-empty username and password. This demonstration does not verify credentials against a server.</p>
+    </div>
+  </div>
+</section>
+
+<div id="app" class="hidden">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="brand-mark"><svg><use href="#i-shield"/></svg></div>
+      <div><div class="brand-name">NaoTrack</div><div class="brand-sub">Transport Management</div></div>
+    </div>
+    <div class="nav-label">Workspace</div>
+    <nav class="nav-list" id="mainNav" aria-label="Main navigation">
+      <button class="nav-item active" data-page="overview"><span class="icon"><svg><use href="#i-grid"/></svg></span>Overview</button>
+      <button class="nav-item" data-page="vehicles"><span class="icon"><svg><use href="#i-bus"/></svg></span>Vehicles</button>
+      <button class="nav-item" data-page="students"><span class="icon"><svg><use href="#i-users"/></svg></span>Students</button>
+      <button class="nav-item" data-page="attendance"><span class="icon"><svg><use href="#i-check"/></svg></span>Attendance</button>
+      <button class="nav-item" data-page="tracking"><span class="icon"><svg><use href="#i-map"/></svg></span>Tracking Map</button>
+      <button class="nav-item" data-page="notifications"><span class="icon"><svg><use href="#i-bell"/></svg></span>Notifications <span class="nav-count hidden" id="navNoticeCount">0</span></button>
+      <div class="nav-label" style="padding-top:22px">Administration</div>
+      <button class="nav-item" data-page="settings"><span class="icon"><svg><use href="#i-settings"/></svg></span>Settings</button>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="profile-row">
+        <div class="avatar" id="userAvatar">A</div>
+        <div style="min-width:0"><div class="profile-name" id="userName">Administrator</div><div class="profile-role">School Administrator</div></div>
+      </div>
+      <button class="nav-item" id="logoutButton"><span class="icon"><svg><use href="#i-logout"/></svg></span>Sign Out</button>
+    </div>
+  </aside>
+  <div id="sidebarOverlay"></div>
+  <div class="main-shell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="top-icon-btn menu-toggle" id="menuToggle" aria-label="Open navigation"><svg class="icon"><use href="#i-menu"/></svg></button>
+        <div class="breadcrumb">NaoTrack <span style="margin:0 7px">/</span><strong id="breadcrumbCurrent">Overview</strong></div>
+      </div>
+      <div class="topbar-right">
+        <span class="topbar-user" id="topbarGreeting">Welcome</span>
+        <button class="top-icon-btn" id="topNotificationButton" aria-label="Open notifications" title="Notifications" style="position:relative">
+          <svg class="icon"><use href="#i-bell"/></svg><span id="topNoticeDot" class="notice-dot hidden"></span>
+        </button>
+        <div class="avatar" id="topAvatar" style="width:34px;height:34px">A</div>
+      </div>
+    </header>
+    <main class="content" id="pageContent"></main>
+  </div>
+</div>
+
+<div id="modalRoot"></div>
+<div id="toastRoot" aria-live="polite" aria-atomic="true"></div>
+
+<script>
+(function(){
+"use strict";
+
+const STORAGE_KEY = "naotrack_prototype_v1";
+const SESSION_KEY = "naotrack_session_v1";
+const $ = (selector, root=document) => root.querySelector(selector);
+const $$ = (selector, root=document) => Array.from(root.querySelectorAll(selector));
+const icon = (name) => '<svg class="icon" aria-hidden="true"><use href="#i-'+name+'"/></svg>';
+const esc = value => String(value == null ? "" : value).replace(/[&<>"']/g, c => ({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+}[c]));
+const safeParse = (value, fallback) => {
+  try { const result=JSON.parse(value); return result == null ? fallback : result; }
+  catch(e){ return fallback; }
+};
+const todayISO = () => {
+  const d=new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+};
+const todayLabel = () => new Date().toLocaleDateString(undefined,{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+const timestamp = () => new Date().toISOString();
+const makeId = prefix => prefix+"-"+Date.now().toString(36).toUpperCase()+"-"+Math.random().toString(36).slice(2,5).toUpperCase();
+const csvCell = value => '"'+String(value == null ? "" : value).replace(/"/g,'""')+'"';
+
+const initialData = () => ({
+  version:1,
+  vehicles:[
+    {id:"4827",driver:"Amit Kumar",route:"Route A — Main Road",status:"On Route",students:10,notes:"Demonstration vehicle"},
+    {id:"4828",driver:"Neha Sharma",route:"Route B — Market Road",status:"At School",students:12,notes:""},
+    {id:"4829",driver:"Ravi Verma",route:"Route C — Station Road",status:"Scheduled",students:8,notes:""}
+  ],
+  students:[
+    {id:"NT1001",name:"Aarav Sharma",className:"Class 7",vehicle:"4827",guardian:"9876501001"},
+    {id:"NT1002",name:"Ananya Verma",className:"Class 6",vehicle:"4827",guardian:"9876501002"},
+    {id:"NT1003",name:"Vihaan Singh",className:"Class 8",vehicle:"4828",guardian:"9876501003"},
+    {id:"NT1004",name:"Ishita Gupta",className:"Class 5",vehicle:"4828",guardian:"9876501004"},
+    {id:"NT1005",name:"Aditya Kumar",className:"Class 7",vehicle:"4829",guardian:"9876501005"},
+    {id:"NT1006",name:"Saanvi Mishra",className:"Class 6",vehicle:"4827",guardian:"9876501006"}
+  ],
+  attendance:{},
+  notifications:[
+    {id:"N001",title:"Welcome to NaoTrack",message:"Your local demonstration workspace is ready. Review the sample vehicles and student records.",time:timestamp(),read:false},
+    {id:"N002",title:"GPS demonstration mode",message:"Vehicle positions on the Tracking Map are illustrative and are not live GPS coordinates.",time:timestamp(),read:false}
+  ],
+  settings:{schoolName:"NaoTrack Demo School",schoolAddress:"Pratapgarh, Uttar Pradesh",schoolYear:"2026–2027",notifyAttendance:true,notifyVehicle:true},
+  activity:[]
+});
+
+function loadData(){
+  try {
+    const raw=localStorage.getItem(STORAGE_KEY);
+    if(!raw) return initialData();
+    const parsed=JSON.parse(raw);
+    if(!parsed || typeof parsed!=="object" || !Array.isArray(parsed.vehicles) || !Array.isArray(parsed.students)) return initialData();
+    const fallback=initialData();
+    return {
+      ...fallback,
+      ...parsed,
+      vehicles:Array.isArray(parsed.vehicles)?parsed.vehicles:fallback.vehicles,
+      students:Array.isArray(parsed.students)?parsed.students:fallback.students,
+      attendance:parsed.attendance && typeof parsed.attendance==="object" && !Array.isArray(parsed.attendance)?parsed.attendance:{},
+      notifications:Array.isArray(parsed.notifications)?parsed.notifications:fallback.notifications,
+      activity:Array.isArray(parsed.activity)?parsed.activity:[],
+      settings:{...fallback.settings,...(parsed.settings && typeof parsed.settings==="object"?parsed.settings:{})}
+    };
+  } catch(error) {
+    return initialData();
+  }
+}
+
+let data=loadData();
+let currentUser="";
+let currentPage="overview";
+let toastTimer=null;
+let loginBusy=false;
+let modalPreviousFocus=null;
+
+function saveData(){
+  try {
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
+    return true;
+  } catch(error) {
+    toast("Storage unavailable","Changes may not persist. Check your browser's local storage settings.",true);
+    return false;
+  }
+}
+
+function logActivity(text){
+  data.activity.unshift({id:makeId("ACT"),text,time:timestamp()});
+  data.activity=data.activity.slice(0,40);
+  saveData();
+}
+
+function toast(title,message,isError=false){
+  const root=$("#toastRoot");
+  root.innerHTML='<div class="notice-toast '+(isError?'error':'')+'" role="status">'+
+    '<span style="color:'+(isError?'var(--red)':'var(--green)')+'">'+icon(isError?'bell':'check')+'</span>'+
+    '<div class="toast-text"><strong>'+esc(title)+'</strong>'+esc(message)+'</div></div>';
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>{root.innerHTML="";},3600);
+}
+
+function notify(title,message){
+  data.notifications.unshift({id:makeId("N"),title,message,time:timestamp(),read:false});
+  data.notifications=data.notifications.slice(0,100);
+  saveData();
+  updateNoticeIndicators();
+}
+
+function updateNoticeIndicators(){
+  const unread=data.notifications.filter(n=>!n.read).length;
+  const nav=$("#navNoticeCount"),dot=$("#topNoticeDot");
+  nav.textContent=unread;
+  nav.classList.toggle("hidden",unread===0);
+  dot.classList.toggle("hidden",unread===0);
+}
+
+function setLoginError(message){
+  $("#loginError").textContent=message;
+  $("#loginUsername").setAttribute("aria-invalid",message?"true":"false");
+  $("#loginPassword").setAttribute("aria-invalid",message?"true":"false");
+}
+
+$("#togglePassword").addEventListener("click",()=>{
+  const input=$("#loginPassword");
+  const show=input.type==="password";
+  input.type=show?"text":"password";
+  $("#togglePassword").textContent=show?"Hide":"Show";
+  $("#togglePassword").setAttribute("aria-label",show?"Hide password":"Show password");
+});
+
+function handleLogin(event){
+  if(event) event.preventDefault();
+  if(loginBusy) return false;
+
+  const username=$("#loginUsername").value.trim();
+  const password=$("#loginPassword").value;
+  setLoginError("");
+  if(!username){setLoginError("Please enter your username.");$("#loginUsername").focus();return false;}
+  if(!password.trim()){setLoginError("Please enter your password.");$("#loginPassword").focus();return false;}
+
+  loginBusy=true;
+  const button=$("#loginSubmit");
+  button.disabled=true;
+  $("#loginSubmitText").textContent="Signing in…";
+
+  try {
+    currentUser=username;
+    try { sessionStorage.setItem(SESSION_KEY,JSON.stringify({username})); } catch(e){}
+    $("#loginScreen").classList.add("hidden");
+    $("#app").classList.remove("hidden");
+    $("#userName").textContent=username;
+    $("#userAvatar").textContent=username.charAt(0).toUpperCase();
+    $("#topAvatar").textContent=username.charAt(0).toUpperCase();
+    $("#topbarGreeting").textContent="Welcome, "+username;
+    renderPage("overview");
+    updateNoticeIndicators();
+    toast("Signed in successfully","Welcome to NaoTrack, "+username+".");
+  } catch(error) {
+    setLoginError("Dashboard error: "+(error && error.message ? error.message : "Please try again."));
+    console.error("NaoTrack login error:",error);
+  } finally {
+    loginBusy=false;
+    button.disabled=false;
+    $("#loginSubmitText").textContent="Sign In";
+  }
+  return false;
+}
+window.naotrackSignIn=handleLogin;
+$("#loginForm").addEventListener("submit",handleLogin);
+$("#loginSubmit").addEventListener("click",handleLogin);
+
+function tryRestoreSession(){
+  try {
+    const session=safeParse(sessionStorage.getItem(SESSION_KEY),null);
+    if(session && typeof session.username==="string" && session.username.trim()){
+      currentUser=session.username;
+      $("#loginScreen").classList.add("hidden");
+      $("#app").classList.remove("hidden");
+      $("#userName").textContent=currentUser;
+      $("#userAvatar").textContent=currentUser.charAt(0).toUpperCase();
+      $("#topAvatar").textContent=currentUser.charAt(0).toUpperCase();
+      $("#topbarGreeting").textContent="Welcome, "+currentUser;
+      renderPage("overview");
+      updateNoticeIndicators();
+    }
+  } catch(error){}
+}
+
+$("#logoutButton").addEventListener("click",()=>{
+  if(!confirm("Sign out of NaoTrack?")) return;
+  try{sessionStorage.removeItem(SESSION_KEY);}catch(e){}
+  currentUser="";
+  $("#app").classList.add("hidden");
+  $("#loginScreen").classList.remove("hidden");
+  $("#loginPassword").value="";
+  setLoginError("");
+  closeSidebar();
+  $("#loginUsername").focus();
+  toast("Signed out","You have been signed out of this session.");
+});
+
+function closeSidebar(){
+  $("#sidebar").classList.remove("open");
+  $("#sidebarOverlay").classList.remove("visible");
+}
+$("#menuToggle").addEventListener("click",()=>{
+  $("#sidebar").classList.toggle("open");
+  $("#sidebarOverlay").classList.toggle("visible");
+});
+$("#sidebarOverlay").addEventListener("click",closeSidebar);
+$("#mainNav").addEventListener("click",event=>{
+  const button=event.target.closest("[data-page]");
+  if(!button)return;
+  renderPage(button.dataset.page);
+  closeSidebar();
+});
+$("#topNotificationButton").addEventListener("click",()=>renderPage("notifications"));
+
+function getVehicle(id){return data.vehicles.find(v=>v.id===id);}
+function getStudent(id){return data.students.find(s=>s.id===id);}
+function getStatusClass(status){
+  return ({
+    "On Route":"on-route","At School":"at-school","Scheduled":"scheduled",
+    "Delayed":"delayed","Present":"present","Absent":"absent","Unmarked":"unmarked","Offline":"offline"
+  })[status]||"scheduled";
+}
+function statusPill(status){
+  return '<span class="status '+getStatusClass(status)+'">'+esc(status)+'</span>';
+}
+function vehicleCount(id){return data.students.filter(s=>s.vehicle===id).length;}
+function currentAttendance(){
+  const day=data.attendance[todayISO()]||{};
+  return data.students.map(s=>({...s,mark:day[s.id]||"Unmarked"}));
+}
+function fmtTime(value){
+  if(!value)return "Unknown time";
+  const d=new Date(value);
+  return Number.isNaN(d.getTime())?"Unknown time":d.toLocaleString(undefined,{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"});
+}
+function escAttr(value){return esc(value);}
+function vehicleOptions(selected,includeNone=true){
+  let html=includeNone?'<option value="">Unassigned</option>':"";
+  html+=data.vehicles.map(v=>'<option value="'+escAttr(v.id)+'" '+(selected===v.id?"selected":"")+'>'+esc(v.id+' — '+v.route)+'</option>').join("");
+  return html;
+}
+function emptyState(title,description,buttonLabel,action){
+  return '<div class="empty-state"><div class="empty-icon">'+icon("file")+'</div><strong>'+esc(title)+'</strong><div>'+esc(description)+'</div>'+
+    (buttonLabel?'<button class="btn btn-primary btn-sm" style="margin-top:17px" data-action="'+escAttr(action)+'">'+esc(buttonLabel)+'</button>':"")+'</div>';
+}
+function pageHeading(title,description,actions){
+  return '<div class="page-heading"><div><h1>'+esc(title)+'</h1><p>'+esc(description)+'</p></div><div class="heading-actions">'+(actions||"")+'</div></div>';
+}
+function searchToolbar(placeholder,filterId,options){
+  return '<div class="section-toolbar"><div class="search-wrap">'+icon("search")+'<input class="search-input" id="recordSearch" placeholder="'+escAttr(placeholder)+'" aria-label="'+escAttr(placeholder)+'"></div>'+
+    (options?'<select class="filter-select" id="'+escAttr(filterId)+'" aria-label="Filter records">'+options+'</select>':"")+'</div>';
+}
+function tablePanel(content){
+  return '<div class="panel"><div class="table-wrap">'+content+'</div></div>';
+}
+
+function renderPage(page){
+  const valid=["overview","vehicles","students","attendance","tracking","notifications","settings"];
+  if(!valid.includes(page))page="overview";
+  currentPage=page;
+  $$(".nav-item[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
+  $("#breadcrumbCurrent").textContent=({
+    overview:"Overview",vehicles:"Vehicles",students:"Students",attendance:"Attendance",
+    tracking:"Tracking Map",notifications:"Notifications",settings:"Settings"
+  })[page];
+  const renderers={
+    overview:renderOverview,vehicles:renderVehicles,students:renderStudents,
+    attendance:renderAttendance,tracking:renderTracking,
+    notifications:renderNotifications,settings:renderSettings
+  };
+  $("#pageContent").innerHTML=renderers[page]();
+  bindPageEvents(page);
+  updateNoticeIndicators();
+  window.scrollTo({top:0,behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+}
+
+function renderOverview(){
+  const present=currentAttendance().filter(s=>s.mark==="Present").length;
+  const absent=currentAttendance().filter(s=>s.mark==="Absent").length;
+  const marked=present+absent;
+  const running=data.vehicles.filter(v=>v.status==="On Route").length;
+  const vehicleRows=data.vehicles.slice(0,5).map(v=>
+    '<div class="vehicle-mini"><div class="vehicle-symbol">'+icon("bus")+'</div><div class="vehicle-main"><strong>Vehicle '+esc(v.id)+'</strong><p>'+esc(v.route)+' · '+vehicleCount(v.id)+' students</p></div><div class="vehicle-side">'+statusPill(v.status)+'<span class="small muted">'+esc(v.driver)+'</span></div></div>'
+  ).join("");
+  const activity=data.activity.slice(0,5).map(a=>
+    '<div class="activity-item"><span class="activity-dot"></span><div><p>'+esc(a.text)+'</p><small>'+esc(fmtTime(a.time))+'</small></div></div>'
+  ).join("");
+  const recentNotices=data.notifications.slice(0,3).map(n=>
+    '<div class="activity-item"><span class="activity-dot" style="background:'+(n.read?'#c4ceda':'#3478c7')+'"></span><div><p><strong>'+esc(n.title)+'</strong><br>'+esc(n.message)+'</p><small>'+esc(fmtTime(n.time))+'</small></div></div>'
+  ).join("");
+  return pageHeading("Overview","Transport operations at a glance · "+todayLabel(),
+      '<button class="btn" data-action="export-all">'+icon("download")+' Export data</button><button class="btn btn-primary" data-action="add-vehicle">'+icon("plus")+' Add vehicle</button>')+
+    '<div class="stats-grid">'+
+      '<div class="stat-card"><div class="stat-top"><span class="stat-label">Total vehicles</span><span class="stat-icon">'+icon("bus")+'</span></div><div class="stat-number">'+data.vehicles.length+'</div><div class="stat-foot">Registered transport vehicles</div></div>'+
+      '<div class="stat-card"><div class="stat-top"><span class="stat-label">Total students</span><span class="stat-icon">'+icon("users")+'</span></div><div class="stat-number">'+data.students.length+'</div><div class="stat-foot">Student transport records</div></div>'+
+      '<div class="stat-card"><div class="stat-top"><span class="stat-label">Vehicles on route</span><span class="stat-icon">'+icon("route")+'</span></div><div class="stat-number">'+running+'</div><div class="stat-foot">Manually managed status</div></div>'+
+      '<div class="stat-card"><div class="stat-top"><span class="stat-label">Present today</span><span class="stat-icon">'+icon("check")+'</span></div><div class="stat-number">'+present+'</div><div class="stat-foot">'+marked+' of '+data.students.length+' records marked'+(absent?' · '+absent+' absent':"")+'</div></div>'+
+    '</div>'+
+    '<div class="dashboard-grid"><section class="panel"><div class="panel-head"><h2>Vehicle overview</h2><button class="btn btn-sm" data-action="navigate-vehicles">View all '+icon("route")+'</button></div><div class="panel-body">'+(vehicleRows||emptyState("No vehicles yet","Add a vehicle to start managing transport.","Add vehicle","add-vehicle"))+'</div></section>'+
+    '<section class="panel"><div class="panel-head"><h2>Recent activity</h2><span class="muted small">Latest updates</span></div><div class="panel-body">'+(activity||emptyState("No activity yet","Your actions will appear here."))+'</div></section></div>'+
+    '<div class="dashboard-grid"><section class="panel"><div class="panel-head"><h2>Attendance summary</h2><button class="btn btn-sm" data-action="navigate-attendance">Manage attendance</button></div><div class="panel-body"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin:12px 0 18px"><div><div class="muted small">Attendance marked today</div><div style="font-size:27px;font-weight:750;margin-top:7px">'+marked+' / '+data.students.length+'</div></div><div style="text-align:right"><div class="small" style="color:var(--green);margin-bottom:7px">Present: '+present+'</div><div class="small" style="color:var(--amber)">Absent: '+absent+'</div></div></div><div style="height:8px;background:#edf1f5;border-radius:8px;overflow:hidden;display:flex"><div style="width:'+(data.students.length?present/data.students.length*100:0)+'%;background:#18865a"></div><div style="width:'+(data.students.length?absent/data.students.length*100:0)+'%;background:#d29332"></div></div><p class="muted small" style="margin:12px 0 0">Attendance records are saved locally in this browser.</p></div></section>'+
+    '<section class="panel"><div class="panel-head"><h2>Recent notifications</h2><button class="btn btn-sm" data-action="navigate-notifications">View all</button></div><div class="panel-body"><div class="activity-list">'+(recentNotices||'<p class="muted small">No notifications.</p>')+'</div></div></section></div>'+
+    '<div class="app-footnote">NaoTrack prototype · Local demonstration data · GPS tracking is simulated</div>';
+}
+
+function renderVehicles(){
+  const rows=data.vehicles.map(v=>
+    '<tr data-search-row data-search="'+escAttr([v.id,v.driver,v.route,v.status].join(" ").toLowerCase())+'">'+
+    '<td><span class="td-primary">'+esc(v.id)+'</span><span class="td-secondary">Vehicle ID</span></td>'+
+    '<td><span class="td-primary">'+esc(v.driver)+'</span></td>'+
+    '<td>'+esc(v.route)+'</td><td>'+statusPill(v.status)+'</td>'+
+    '<td><span class="td-primary">'+vehicleCount(v.id)+'</span> <span class="muted">students</span></td>'+
+    '<td><div class="table-actions"><button class="action-btn" data-action="edit-vehicle" data-id="'+escAttr(v.id)+'" title="Edit vehicle" aria-label="Edit vehicle">'+icon("edit")+'</button><button class="action-btn danger" data-action="delete-vehicle" data-id="'+escAttr(v.id)+'" title="Delete vehicle" aria-label="Delete vehicle">'+icon("trash")+'</button></div></td></tr>'
+  ).join("");
+  return pageHeading("Vehicles","Manage transport vehicles, drivers, routes and statuses.",
+    '<button class="btn" data-action="export-vehicles">'+icon("download")+' Export CSV</button><button class="btn btn-primary" data-action="add-vehicle">'+icon("plus")+' Add vehicle</button>')+
+    searchToolbar("Search vehicle, driver or route…","vehicleFilter",'<option value="">All statuses</option><option>On Route</option><option>At School</option><option>Scheduled</option><option>Delayed</option>')+
+    tablePanel('<table><thead><tr><th>Vehicle ID</th><th>Driver</th><th>Route</th><th>Status</th><th>Students</th><th>Actions</th></tr></thead><tbody id="vehicleTableBody">'+rows+'</tbody></table><div id="vehicleEmpty" class="hidden">'+emptyState("No matching vehicles","Try another search or add a vehicle.","Add vehicle","add-vehicle")+'</div><div class="table-footer"><span id="vehicleCountLabel">'+data.vehicles.length+' vehicles</span><span>Status changes are saved automatically</span></div>');
+}
+
+function renderStudents(){
+  const rows=data.students.map(s=>{
+    const v=getVehicle(s.vehicle);
+    return '<tr data-search-row data-search="'+escAttr([s.id,s.name,s.className,s.vehicle,s.guardian].join(" ").toLowerCase())+'">'+
+    '<td><span class="td-primary">'+esc(s.id)+'</span></td><td><span class="td-primary">'+esc(s.name)+'</span></td>'+
+    '<td>'+esc(s.className)+'</td><td>'+(v?'<span class="td-primary">'+esc(v.id)+'</span><span class="td-secondary">'+esc(v.route)+'</span>':'<span class="muted">Unassigned</span>')+'</td>'+
+    '<td>'+esc(s.guardian||"Not provided")+'</td><td><div class="table-actions"><button class="action-btn" data-action="view-student" data-id="'+escAttr(s.id)+'" title="View student" aria-label="View student">'+icon("eye")+'</button><button class="action-btn" data-action="edit-student" data-id="'+escAttr(s.id)+'" title="Edit student" aria-label="Edit student">'+icon("edit")+'</button><button class="action-btn danger" data-action="delete-student" data-id="'+escAttr(s.id)+'" title="Delete student" aria-label="Delete student">'+icon("trash")+'</button></div></td></tr>';
+  }).join("");
+  return pageHeading("Students","Manage student records, classes, assigned vehicles and guardian contacts.",
+    '<button class="btn" data-action="export-students">'+icon("download")+' Export CSV</button><button class="btn btn-primary" data-action="add-student">'+icon("plus")+' Add student</button>')+
+    searchToolbar("Search student, ID, class or guardian…")+
+    tablePanel('<table><thead><tr><th>Student ID</th><th>Student name</th><th>Class</th><th>Assigned vehicle</th><th>Guardian contact</th><th>Actions</th></tr></thead><tbody id="studentTableBody">'+rows+'</tbody></table><div id="studentEmpty" class="hidden">'+emptyState("No matching students","Try another search or add a student.","Add student","add-student")+'</div><div class="table-footer"><span id="studentCountLabel">'+data.students.length+' students</span><span>Demonstration records only</span></div>');
+}
+
+function renderAttendance(){
+  const records=currentAttendance();
+  const present=records.filter(s=>s.mark==="Present").length;
+  const absent=records.filter(s=>s.mark==="Absent").length;
+  const unmarked=records.filter(s=>s.mark==="Unmarked").length;
+  const rows=records.map(s=>{
+    const v=getVehicle(s.vehicle);
+    return '<tr data-search-row data-search="'+escAttr([s.id,s.name,s.className,s.vehicle,s.mark].join(" ").toLowerCase())+'">'+
+      '<td><span class="td-primary">'+esc(s.id)+'</span></td><td><span class="td-primary">'+esc(s.name)+'</span></td>'+
+      '<td>'+esc(s.className)+'</td><td>'+(v?esc(v.id):'<span class="muted">Unassigned</span>')+'</td>'+
+      '<td><select class="filter-select attendance-mark" data-student-id="'+escAttr(s.id)+'" aria-label="Attendance for '+escAttr(s.name)+'">'+
+      ['Unmarked','Present','Absent'].map(x=>'<option '+(s.mark===x?'selected':'')+'>'+x+'</option>').join("")+'</select></td>'+
+      '<td><span class="attendance-status">'+statusPill(s.mark)+'</span></td></tr>';
+  }).join("");
+  return pageHeading("Attendance","Record daily student attendance. Changes save automatically.",
+    '<button class="btn" data-action="export-attendance">'+icon("download")+' Export CSV</button><button class="btn btn-primary" data-action="mark-all-present">'+icon("check")+' Mark all present</button>')+
+    '<div class="section-toolbar"><div><strong>'+esc(todayLabel())+'</strong><div class="muted small" style="margin-top:5px">Attendance date: '+todayISO()+'</div></div><button class="btn" data-action="reset-attendance">Reset today</button></div>'+
+    '<div class="attendance-summary"><div class="att-card green"><span>Present</span><strong>'+present+'</strong></div><div class="att-card amber"><span>Absent</span><strong>'+absent+'</strong></div><div class="att-card"><span>Unmarked</span><strong>'+unmarked+'</strong></div><div class="att-card"><span>Total students</span><strong>'+records.length+'</strong></div></div>'+
+    searchToolbar("Search students or vehicle…")+
+    tablePanel('<table><thead><tr><th>Student ID</th><th>Student name</th><th>Class</th><th>Vehicle</th><th>Mark attendance</th><th>Current status</th></tr></thead><tbody id="attendanceTableBody">'+rows+'</tbody></table><div id="attendanceEmpty" class="hidden">'+emptyState("No matching records","Try a different search.")+'</div><div class="table-footer"><span id="attendanceCountLabel">'+records.length+' records</span><span>Saved locally · '+todayISO()+'</span></div>');
+}
+
+function renderTracking(){
+  const vehicle=data.vehicles;
+  const mapMarkers=vehicle.slice(0,3).map((v,i)=>{
+    const positions=["m1","m2","m3"];
+    return '<button class="map-marker '+positions[i]+'" data-action="select-map-vehicle" data-id="'+escAttr(v.id)+'" title="View vehicle '+escAttr(v.id)+'" aria-label="View vehicle '+escAttr(v.id)+'"><span>'+esc(i+1)+'</span></button>';
+  }).join("");
+  const list=vehicle.map(v=>
+    '<div class="map-vehicle"><div class="vehicle-symbol">'+icon("bus")+'</div><div class="map-vehicle-info"><strong>Vehicle '+esc(v.id)+'</strong><p>'+esc(v.route)+'</p><p>Driver: '+esc(v.driver)+'</p></div>'+statusPill(v.status)+'</div>'
+  ).join("");
+  return pageHeading("Tracking Map","Review vehicle routes and their recorded operating statuses.",
+    '<button class="btn" data-action="navigate-vehicles">'+icon("bus")+' Manage vehicles</button>')+
+    '<div class="panel" style="margin-bottom:17px"><div class="panel-head"><h2>Vehicle locations</h2><span class="status scheduled">Demonstration mode</span></div><div class="panel-body"><p class="muted small" style="line-height:1.7;margin-bottom:0">This illustrative map is not connected to GPS, a mapping provider or live vehicle telemetry. Markers are decorative demonstration positions, not actual vehicle locations.</p></div></div>'+
+    '<div class="map-layout"><section class="panel"><div class="panel-head"><h2>Route overview</h2><span class="muted small">Illustrative layout</span></div><div class="panel-body"><div class="map-canvas"><div class="map-grid"></div><div class="map-road r1"></div><div class="map-road r2"></div><div class="map-road r3"></div><div class="map-road r4"></div><div class="map-park p1"></div><div class="map-park p2"></div><span class="map-place market">Main Road</span><span class="map-place park">Green Park</span><span class="map-place school">'+esc(data.settings.schoolName)+'</span><div class="map-legend"><div class="legend-row"><span class="legend-dot" style="background:var(--blue)"></span>On Route</div><div class="legend-row"><span class="legend-dot" style="background:var(--green)"></span>At School</div><div class="legend-row"><span class="legend-dot" style="background:#d29332"></span>Scheduled / Other</div></div>'+mapMarkers+'<div class="demo-label">Schematic map · Not to scale</div></div></div></section>'+
+    '<section class="panel"><div class="panel-head"><h2>Fleet status</h2><span class="muted small">'+vehicle.length+' vehicles</span></div><div class="panel-body">'+(list||emptyState("No vehicles","Add vehicles to populate this list.","Add vehicle","add-vehicle"))+'</div></section></div>'+
+    '<div class="panel" style="margin-top:18px"><div class="panel-head"><h2>Integration information</h2></div><div class="panel-body"><p class="muted small" style="line-height:1.8">To support real-time tracking, a future deployment needs GPS-capable devices, a secure backend, an authenticated telemetry API and a genuine mapping service. This standalone file does not collect or transmit GPS data.</p></div></div>';
+}
+
+function renderNotifications(){
+  const items=data.notifications.map(n=>
+    '<div class="notice-item '+(n.read?'read':'')+'"><div class="notice-symbol">'+icon("bell")+'</div><div class="notice-content"><strong>'+esc(n.title)+'</strong><p>'+esc(n.message)+'</p><small>'+esc(fmtTime(n.time))+'</small></div><div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">'+
+    (!n.read?'<button class="btn btn-sm" data-action="read-notification" data-id="'+escAttr(n.id)+'">Mark read</button>':'<span class="muted small">Read</span>')+
+    '<button class="action-btn danger" data-action="delete-notification" data-id="'+escAttr(n.id)+'" aria-label="Delete notification">'+icon("trash")+'</button></div></div>'
+  ).join("");
+  return pageHeading("Notifications","Review system messages and transport management updates.",
+    '<button class="btn" data-action="mark-all-read">Mark all as read</button><button class="btn btn-primary" data-action="new-notification">'+icon("plus")+' Add notification</button>')+
+    '<div class="panel">'+(items||emptyState("You're all caught up","There are no notifications yet."))+
+    '<div class="table-footer"><span>'+data.notifications.length+' notifications</span><span>'+data.notifications.filter(n=>!n.read).length+' unread</span></div></div>';
+}
+
+function renderSettings(){
+  const s=data.settings;
+  return pageHeading("Settings","Configure your school profile, preferences and local prototype data.")+
+    '<div class="settings-layout"><section class="panel settings-section"><h2>School profile</h2><p>Manage the school details displayed throughout NaoTrack.</p><form id="settingsForm"><div class="field"><label for="schoolName">School name</label><input id="schoolName" name="schoolName" required maxlength="100" value="'+escAttr(s.schoolName)+'"></div><div class="field"><label for="schoolAddress">School address</label><input id="schoolAddress" name="schoolAddress" maxlength="180" value="'+escAttr(s.schoolAddress)+'"></div><div class="field"><label for="schoolYear">Academic year</label><input id="schoolYear" name="schoolYear" maxlength="30" value="'+escAttr(s.schoolYear)+'"></div><button class="btn btn-primary" type="submit">Save school profile</button></form></section>'+
+    '<section class="panel settings-section"><h2>Preferences</h2><p>Choose which local prototype notifications should be generated by supported actions.</p>'+
+    '<div class="setting-row"><div><strong>Attendance notifications</strong><p>Generate notices when attendance is recorded.</p></div><label class="toggle"><input type="checkbox" id="notifyAttendance" '+(s.notifyAttendance?'checked':'')+'><span class="toggle-slider"></span></label></div>'+
+    '<div class="setting-row"><div><strong>Vehicle notifications</strong><p>Generate notices when vehicle records change.</p></div><label class="toggle"><input type="checkbox" id="notifyVehicle" '+(s.notifyVehicle?'checked':'')+'><span class="toggle-slider"></span></label></div>'+
+    '<div class="setting-row"><div><strong>Prototype storage</strong><p>Records are stored in this browser on this device.</p></div><span class="status at-school">Local</span></div>'+
+    '<div class="setting-row"><div><strong>Export all data</strong><p>Download a JSON backup of your current prototype records.</p></div><button class="btn btn-sm" data-action="export-all">'+icon("download")+' Export</button></div>'+
+    '<div class="setting-row"><div><strong>Restore demonstration data</strong><p>Replace local records with the original sample dataset.</p></div><button class="btn btn-danger btn-sm" data-action="reset-data">Reset data</button></div></section></div>'+
+    '<div class="panel settings-section" style="margin-top:18px"><h2>About this prototype</h2><p style="margin:8px 0 0">NaoTrack — Student Transport Tracking &amp; Safety System. This standalone demo provides local record management, attendance, CSV/JSON export and illustrative tracking. Authentication is a client-side demonstration, not secure identity verification. No remote server, real-time GPS or remote notifications are configured.</p></div>';
+}
+
+function bindPageEvents(page){
+  const search=$("#recordSearch");
+  if(search){
+    search.addEventListener("input",filterTable);
+  }
+  const filter=$("#vehicleFilter");
+  if(filter)filter.addEventListener("change",filterTable);
+
+  if(page==="attendance"){
+    $$(".attendance-mark").forEach(select=>select.addEventListener("change",()=>{
+      const studentId=select.dataset.studentId;
+      const mark=select.value;
+      if(!data.attendance[todayISO()])data.attendance[todayISO()]={};
+      if(mark==="Unmarked")delete data.attendance[todayISO()][studentId];
+      else data.attendance[todayISO()][studentId]=mark;
+      saveData();
+      logActivity("Attendance for "+(getStudent(studentId)?.name||studentId)+" marked "+mark.toLowerCase()+".");
+      if(data.settings.notifyAttendance)notify("Attendance updated",(getStudent(studentId)?.name||studentId)+" marked "+mark.toLowerCase()+".");
+      renderPage("attendance");
+      toast("Attendance saved","The record has been updated.");
+    }));
+  }
+  if(page==="settings"){
+    $("#settingsForm").addEventListener("submit",event=>{
+      event.preventDefault();
+      const name=$("#schoolName").value.trim();
+      if(!name){toast("School name required","Enter a school name before saving.",true);$("#schoolName").focus();return;}
+      data.settings.schoolName=name;
+      data.settings.schoolAddress=$("#schoolAddress").value.trim();
+      data.settings.schoolYear=$("#schoolYear").value.trim();
+      saveData();
+      logActivity("School profile settings updated.");
+      toast("Settings saved","Your school profile has been updated.");
+      renderPage("settings");
+    });
+    $("#notifyAttendance").addEventListener("change",event=>{data.settings.notifyAttendance=event.target.checked;saveData();toast("Preference saved","Attendance notification preference updated.");});
+    $("#notifyVehicle").addEventListener("change",event=>{data.settings.notifyVehicle=event.target.checked;saveData();toast("Preference saved","Vehicle notification preference updated.");});
+  }
+}
+
+function filterTable(){
+  const query=($("#recordSearch")?.value||"").trim().toLowerCase();
+  const filter=$("#vehicleFilter")?.value||"";
+  let visible=0;
+  $$("[data-search-row]").forEach(row=>{
+    const matchesQuery=(row.dataset.search||"").includes(query);
+    let matchesFilter=true;
+    if(filter){
+      const statusCell=row.cells[3];
+      matchesFilter=!!statusCell && statusCell.textContent.trim()===filter;
+    }
+    const show=matchesQuery&&matchesFilter;
+    row.classList.toggle("hidden",!show);
+    if(show)visible++;
+  });
+  const countMap={vehicles:"vehicleCountLabel",students:"studentCountLabel",attendance:"attendanceCountLabel"};
+  const emptyMap={vehicles:"vehicleEmpty",students:"studentEmpty",attendance:"attendanceEmpty"};
+  const countId=countMap[currentPage],emptyId=emptyMap[currentPage];
+  if(countId){
+    const label=$( "#"+countId);
+    if(label)label.textContent=visible+" matching "+(currentPage==="vehicles"?"vehicles":currentPage==="students"?"students":"records");
+  }
+  if(emptyId){
+    const empty=$("#"+emptyId);
+    if(empty)empty.classList.toggle("hidden",visible!==0);
+  }
+}
+
+function openModal(title,body,footer){
+  modalPreviousFocus=document.activeElement;
+  $("#modalRoot").innerHTML='<div class="modal-backdrop" id="modalBackdrop"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal-header"><h2 id="modalTitle">'+esc(title)+'</h2><button class="modal-close" type="button" data-action="close-modal" aria-label="Close dialog">×</button></div><div class="modal-body">'+body+'</div>'+(footer?'<div class="modal-footer">'+footer+'</div>':"")+'</div></div>';
+  $("#modalBackdrop").addEventListener("click",event=>{if(event.target.id==="modalBackdrop")closeModal();});
+  const first=$("#modalRoot input, #modalRoot select, #modalRoot textarea, #modalRoot button");
+  if(first)first.focus();
+  document.addEventListener("keydown",modalKeyHandler);
+}
+function modalKeyHandler(event){
+  if(event.key==="Escape" && $("#modalRoot .modal-backdrop"))closeModal();
+}
+function closeModal(){
+  $("#modalRoot").innerHTML="";
+  document.removeEventListener("keydown",modalKeyHandler);
+  if(modalPreviousFocus && typeof modalPreviousFocus.focus==="function")modalPreviousFocus.focus();
+}
+
+function openVehicleForm(id){
+  const existing=id?getVehicle(id):null;
+  const v=existing||{id:"",driver:"",route:"",status:"Scheduled",notes:""};
+  const body='<form id="vehicleForm" novalidate><div class="form-grid">'+
+    '<div class="field"><label for="vId">Vehicle ID *</label><input id="vId" maxlength="30" required value="'+escAttr(v.id)+'" '+(existing?'readonly':'')+' placeholder="e.g. 4830"></div>'+
+    '<div class="field"><label for="vDriver">Driver name *</label><input id="vDriver" maxlength="100" required value="'+escAttr(v.driver)+'" placeholder="Full name"></div>'+
+    '<div class="field full"><label for="vRoute">Route *</label><input id="vRoute" maxlength="150" required value="'+escAttr(v.route)+'" placeholder="Route name or description"></div>'+
+    '<div class="field"><label for="vStatus">Vehicle status *</label><select id="vStatus"><option '+(v.status==="On Route"?"selected":"")+' >On Route</option><option '+(v.status==="At School"?"selected":"")+' >At School</option><option '+(v.status==="Scheduled"?"selected":"")+' >Scheduled</option><option '+(v.status==="Delayed"?"selected":"")+' >Delayed</option></select></div>'+
+    '<div class="field"><label for="vNotes">Notes</label><input id="vNotes" maxlength="300" value="'+escAttr(v.notes||"")+'" placeholder="Optional notes"></div>'+
+    '</div><p class="muted small">Student count is calculated from the assigned student records.</p><div id="vehicleFormError" class="form-error" role="alert"></div></form>';
+  openModal(existing?"Edit vehicle":"Add vehicle",body,'<button class="btn" type="button" data-action="close-modal">Cancel</button><button class="btn btn-primary" type="button" data-action="save-vehicle">Save vehicle</button>');
+  $("#vehicleForm").addEventListener("submit",event=>{event.preventDefault();saveVehicleForm(id);});
+}
+function saveVehicleForm(originalId){
+  const id=$("#vId").value.trim(),driver=$("#vDriver").value.trim(),route=$("#vRoute").value.trim();
+  const error=$("#vehicleFormError");
+  if(!id||!driver||!route){error.textContent="Vehicle ID, driver and route are required.";return;}
+  if(!originalId&&data.vehicles.some(v=>v.id.toLowerCase()===id.toLowerCase())){error.textContent="This vehicle ID already exists.";return;}
+  const record={id,driver,route,status:$("#vStatus").value,notes:$("#vNotes").value.trim()};
+  if(originalId){
+    const index=data.vehicles.findIndex(v=>v.id===originalId);
+    if(index<0){error.textContent="This vehicle no longer exists. Close this form and try again.";return;}
+    record.students=vehicleCount(originalId);
+    data.vehicles[index]={...data.vehicles[index],...record};
+  }else{
+    record.students=0;
+    data.vehicles.push(record);
+  }
+  saveData();
+  logActivity((originalId?"Updated":"Added")+" vehicle "+id+".");
+  if(data.settings.notifyVehicle)notify("Vehicle "+(originalId?"updated":"added"),"Vehicle "+id+" is "+record.status.toLowerCase()+".");
+  closeModal();renderPage(currentPage);
+  toast(originalId?"Vehicle updated":"Vehicle added","Vehicle "+id+" has been saved.");
+}
+
+function deleteVehicle(id){
+  const v=getVehicle(id);if(!v)return;
+  const assigned=vehicleCount(id);
+  const message=assigned
+    ?"Vehicle "+id+" has "+assigned+" assigned student(s). Deleting it will unassign those students. Continue?"
+    :"Delete vehicle "+id+"?";
+  if(!confirm(message))return;
+  data.vehicles=data.vehicles.filter(x=>x.id!==id);
+  data.students=data.students.map(s=>s.vehicle===id?{...s,vehicle:""}:s);
+  saveData();logActivity("Deleted vehicle "+id+".");
+  if(data.settings.notifyVehicle)notify("Vehicle deleted","Vehicle "+id+" was removed from the records.");
+  renderPage(currentPage);toast("Vehicle deleted","Vehicle "+id+" has been removed.");
+}
+
+function openStudentForm(id){
+  const existing=id?getStudent(id):null;
+  const s=existing||{id:"",name:"",className:"",vehicle:"",guardian:""};
+  const body='<form id="studentForm" novalidate><div class="form-grid">'+
+    '<div class="field"><label for="sId">Student ID *</label><input id="sId" maxlength="30" required value="'+escAttr(s.id)+'" '+(existing?'readonly':'')+' placeholder="e.g. NT1007"></div>'+
+    '<div class="field"><label for="sName">Full name *</label><input id="sName" maxlength="120" required value="'+escAttr(s.name)+'" placeholder="Student name"></div>'+
+    '<div class="field"><label for="sClass">Class / Grade *</label><input id="sClass" maxlength="50" required value="'+escAttr(s.className)+'" placeholder="e.g. Class 7"></div>'+
+    '<div class="field"><label for="sVehicle">Assigned vehicle</label><select id="sVehicle">'+vehicleOptions(s.vehicle,true)+'</select></div>'+
+    '<div class="field full"><label for="sGuardian">Guardian contact</label><input id="sGuardian" maxlength="80" value="'+escAttr(s.guardian||"")+'" placeholder="Phone number or contact details"></div>'+
+    '</div><div id="studentFormError" class="form-error" role="alert"></div></form>';
+  openModal(existing?"Edit student":"Add student",body,'<button class="btn" type="button" data-action="close-modal">Cancel</button><button class="btn btn-primary" type="button" data-action="save-student">Save student</button>');
+  $("#studentForm").addEventListener("submit",event=>{event.preventDefault();saveStudentForm(id);});
+}
+function saveStudentForm(originalId){
+  const id=$("#sId").value.trim(),name=$("#sName").value.trim(),className=$("#sClass").value.trim();
+  const error=$("#studentFormError");
+  if(!id||!name||!className){error.textContent="Student ID, name and class are required.";return;}
+  if(!originalId&&data.students.some(s=>s.id.toLowerCase()===id.toLowerCase())){error.textContent="This student ID already exists.";return;}
+  const record={id,name,className,vehicle:$("#sVehicle").value,guardian:$("#sGuardian").value.trim()};
+  if(originalId){
+    const index=data.students.findIndex(s=>s.id===originalId);
+    if(index<0){error.textContent="This student no longer exists. Close this form and try again.";return;}
+    data.students[index]={...data.students[index],...record};
+  }else data.students.push(record);
+  saveData();logActivity((originalId?"Updated":"Added")+" student "+name+".");
+  closeModal();renderPage(currentPage);toast(originalId?"Student updated":"Student added",name+" has been saved.");
+}
+function deleteStudent(id){
+  const s=getStudent(id);if(!s)return;
+  if(!confirm("Delete student "+s.name+" ("+id+")? This cannot be undone."))return;
+  data.students=data.students.filter(x=>x.id!==id);
+  Object.keys(data.attendance).forEach(day=>{if(data.attendance[day])delete data.attendance[day][id];});
+  saveData();logActivity("Deleted student "+s.name+".");
+  renderPage(currentPage);toast("Student deleted",s.name+" has been removed.");
+}
+function viewStudent(id){
+  const s=getStudent(id);if(!s)return;
+  const v=getVehicle(s.vehicle);
+  const mark=(data.attendance[todayISO()]||{})[s.id]||"Unmarked";
+  openModal("Student record",
+    '<div style="display:flex;align-items:center;gap:14px;margin-bottom:22px"><div class="avatar" style="width:50px;height:50px;font-size:18px">'+esc(s.name.charAt(0).toUpperCase())+'</div><div><h2 style="margin-bottom:5px">'+esc(s.name)+'</h2><span class="muted small">'+esc(s.id)+'</span></div></div>'+
+    '<div class="setting-row"><div><strong>Class / Grade</strong></div><span>'+esc(s.className)+'</span></div>'+
+    '<div class="setting-row"><div><strong>Assigned vehicle</strong></div><span>'+(v?esc(v.id):"Unassigned")+'</span></div>'+
+    '<div class="setting-row"><div><strong>Route</strong></div><span>'+(v?esc(v.route):"—")+'</span></div>'+
+    '<div class="setting-row"><div><strong>Guardian contact</strong></div><span>'+esc(s.guardian||"Not provided")+'</span></div>'+
+    '<div class="setting-row"><div><strong>Attendance today</strong></div>'+statusPill(mark)+'</div>',
+    '<button class="btn" data-action="close-modal">Close</button><button class="btn btn-primary" data-action="edit-student" data-id="'+escAttr(id)+'">Edit record</button>');
+}
+
+function markAllPresent(){
+  if(!data.students.length){toast("No students","Add student records first.",true);return;}
+  if(!confirm("Mark all "+data.students.length+" students present for "+todayISO()+"?"))return;
+  if(!data.attendance[todayISO()])data.attendance[todayISO()]={};
+  data.students.forEach(s=>{data.attendance[todayISO()][s.id]="Present";});
+  saveData();logActivity("All "+data.students.length+" students marked present.");
+  if(data.settings.notifyAttendance)notify("Attendance completed","All "+data.students.length+" students marked present.");
+  renderPage("attendance");toast("Attendance updated","All students have been marked present.");
+}
+function resetAttendance(){
+  if(!confirm("Clear all attendance marks for "+todayISO()+"?"))return;
+  delete data.attendance[todayISO()];
+  saveData();logActivity("Today's attendance marks were reset.");
+  renderPage("attendance");toast("Attendance reset","Today's attendance marks have been cleared.");
+}
+
+function downloadFile(filename,content,type){
+  try{
+    const blob=new Blob([content],{type:type||"text/plain;charset=utf-8"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url;a.download=filename;a.style.display="none";
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+    toast("Export ready",filename+" has been downloaded.");
+  }catch(error){toast("Export failed","Your browser could not create the download.",true);}
+}
+function exportCSV(filename,headers,rows){
+  const content=[headers,...rows].map(row=>row.map(csvCell).join(",")).join("\r\n");
+  downloadFile(filename,"\uFEFF"+content,"text/csv;charset=utf-8");
+}
+function exportVehicles(){
+  exportCSV("naotrack-vehicles-"+todayISO()+".csv",
+    ["Vehicle ID","Driver","Route","Status","Student Count","Notes"],
+    data.vehicles.map(v=>[v.id,v.driver,v.route,v.status,vehicleCount(v.id),v.notes||""]));
+}
+function exportStudents(){
+  exportCSV("naotrack-students-"+todayISO()+".csv",
+    ["Student ID","Name","Class","Vehicle ID","Route","Guardian Contact"],
+    data.students.map(s=>[s.id,s.name,s.className,s.vehicle,(getVehicle(s.vehicle)||{}).route||"",s.guardian||""]));
+}
+function exportAttendance(){
+  exportCSV("naotrack-attendance-"+todayISO()+".csv",
+    ["Date","Student ID","Name","Class","Vehicle ID","Attendance"],
+    currentAttendance().map(s=>[todayISO(),s.id,s.name,s.className,s.vehicle,s.mark]));
+}
+function exportAll(){
+  const backup={...data,exportedAt:timestamp(),application:"NaoTrack",formatVersion:1};
+  downloadFile("naotrack-backup-"+todayISO()+".json",JSON.stringify(backup,null,2),"application/json;charset=utf-8");
+}
+
+function newNotification(){
+  const body='<form id="notificationForm" novalidate><div class="field"><label for="nTitle">Title *</label><input id="nTitle" maxlength="120" required placeholder="Notification title"></div><div class="field"><label for="nMessage">Message *</label><textarea id="nMessage" maxlength="1000" required placeholder="Enter the notification details"></textarea></div><div id="notificationFormError" class="form-error" role="alert"></div></form>';
+  openModal("Create notification",body,'<button class="btn" data-action="close-modal">Cancel</button><button class="btn btn-primary" data-action="save-notification">Create notification</button>');
+  $("#notificationForm").addEventListener("submit",event=>{event.preventDefault();saveNotificationForm();});
+}
+function saveNotificationForm(){
+  const title=$("#nTitle").value.trim(),message=$("#nMessage").value.trim();
+  if(!title||!message){$("#notificationFormError").textContent="Both title and message are required.";return;}
+  notify(title,message);logActivity("Created notification: "+title+".");
+  closeModal();renderPage("notifications");toast("Notification created","Your notification was saved locally.");
+}
+function markRead(id){
+  const n=data.notifications.find(n=>n.id===id);if(!n)return;
+  n.read=true;saveData();renderPage("notifications");toast("Notification updated","Marked as read.");
+}
+function markAllRead(){
+  data.notifications.forEach(n=>n.read=true);
+  saveData();renderPage("notifications");toast("Notifications updated","All notifications marked as read.");
+}
+function deleteNotification(id){
+  const n=data.notifications.find(n=>n.id===id);if(!n)return;
+  if(!confirm("Delete notification '"+n.title+"'?"))return;
+  data.notifications=data.notifications.filter(x=>x.id!==id);
+  saveData();renderPage("notifications");toast("Notification deleted","The notification was removed.");
+}
+
+function resetData(){
+  if(!confirm("Reset all NaoTrack data to the original demonstration dataset? Your current vehicles, students, attendance and settings will be replaced. This cannot be undone."))return;
+  data=initialData();
+  saveData();logActivity("Demonstration data was reset.");
+  renderPage("overview");toast("Demo data restored","The original sample records have been restored.");
+}
+
+function handleAction(button){
+  const action=button.dataset.action,id=button.dataset.id;
+  switch(action){
+    case "navigate-vehicles":renderPage("vehicles");break;
+    case "navigate-attendance":renderPage("attendance");break;
+    case "navigate-notifications":renderPage("notifications");break;
+    case "add-vehicle":openVehicleForm(null);break;
+    case "edit-vehicle":closeModal();openVehicleForm(id);break;
+    case "delete-vehicle":deleteVehicle(id);break;
+    case "save-vehicle":saveVehicleForm($("#vId")?.readOnly?$("#vId").value:null);break;
+    case "add-student":openStudentForm(null);break;
+    case "edit-student":closeModal();openStudentForm(id);break;
+    case "delete-student":deleteStudent(id);break;
+    case "view-student":viewStudent(id);break;
+    case "save-student":saveStudentForm($("#sId")?.readOnly?$("#sId").value:null);break;
+    case "mark-all-present":markAllPresent();break;
+    case "reset-attendance":resetAttendance();break;
+    case "export-vehicles":exportVehicles();break;
+    case "export-students":exportStudents();break;
+    case "export-attendance":exportAttendance();break;
+    case "export-all":exportAll();break;
+    case "new-notification":newNotification();break;
+    case "save-notification":saveNotificationForm();break;
+    case "read-notification":markRead(id);break;
+    case "mark-all-read":markAllRead();break;
+    case "delete-notification":deleteNotification(id);break;
+    case "close-modal":closeModal();break;
+    case "reset-data":resetData();break;
+    case "select-map-vehicle":{
+      const v=getVehicle(id);
+      if(v)openModal("Vehicle "+v.id,
+        '<div class="setting-row"><div><strong>Vehicle ID</strong></div><span>'+esc(v.id)+'</span></div>'+
+        '<div class="setting-row"><div><strong>Driver</strong></div><span>'+esc(v.driver)+'</span></div>'+
+        '<div class="setting-row"><div><strong>Route</strong></div><span>'+esc(v.route)+'</span></div>'+
+        '<div class="setting-row"><div><strong>Status</strong></div>'+statusPill(v.status)+'</div>'+
+        '<div class="setting-row"><div><strong>Assigned students</strong></div><span>'+vehicleCount(v.id)+'</span></div>'+
+        '<p class="muted small" style="margin-top:16px">This vehicle\'s marker is illustrative. No GPS location is available.</p>',
+        '<button class="btn" data-action="close-modal">Close</button><button class="btn btn-primary" data-action="edit-vehicle" data-id="'+escAttr(id)+'">Edit vehicle</button>');
+      break;
+    }
+    default:break;
+  }
+}
+
+document.addEventListener("click",event=>{
+  const button=event.target.closest("[data-action]");
+  if(button && !button.disabled)handleAction(button);
+});
+
+window.addEventListener("storage",event=>{
+  if(event.key===STORAGE_KEY){
+    data=loadData();
+    if(!$("#app").classList.contains("hidden"))renderPage(currentPage);
+  }
+});
+
+tryRestoreSession();
+})();
+</script>
+</body>
+</html>
